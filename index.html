@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>SharedArrayBuffer On GitHub pages - Proof Of Concept</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=5.0, width=device-width">
+	<meta name="description" content="How to use SharedArrayBuffer on GitHub pages">
+
+	<style>
+		/* We include a simple spinner animation here */
+		.loader{display:inline-block;width:.5rem;padding:.25rem;vertical-align:-.15rem;aspect-ratio:1;border-radius:50%;background:#25b09b;--_m:conic-gradient(#1b171700 10%, #000),linear-gradient(#000 0 0) content-box;-webkit-mask:var(--_m);mask:var(--_m);-webkit-mask-composite:source-out;mask-composite:subtract;animation:1s linear infinite l3}@keyframes l3{to{transform:rotate(1turn)}}
+	</style>
+
+	<script>
+		const sabAvailable = typeof SharedArrayBuffer !== "undefined";
+		if('serviceWorker' in navigator) {
+			navigator.serviceWorker.register("sw.js");
+			if(!sabAvailable) {
+				// Use location.reload() could lead to undesirable bfcache,
+				// so we use location.replace instead
+				const reloader = () => location.replace(location.href);
+				// We wait at least one second here, to avoid flashes
+				setTimeout(() => navigator.serviceWorker.ready.then(reloader), 1000);
+			}
+		}
+	</script>
+</head>
+
+<body>
+	<!-- The initializing placeholder -->
+	<div id="init" style="display: none;">
+		Initializing... <span class="loader"></span>
+	</div>
+
+	<!-- The actual web content -->
+	<div id="main" style="display: none;">
+		Ready!<br>
+		Check out console output to see SharedArrayBuffer in action.
+	</div>
+
+	<script>
+		// Display proper content
+		const divToShow = sabAvailable ? "main" : "init";
+		const div = document.getElementById(divToShow);
+		div.style.display = "block";
+
+		if(sabAvailable) {
+			// Let's test if it works.
+			// In practice, one will add the entry script here.
+
+			console.log("Main thread creating a buffer");
+			const buffer = new SharedArrayBuffer(32);
+			const worker = new Worker("worker.js");
+			worker.onmessage = () => {
+				const array = new Uint8Array(buffer);
+				console.log(`Main thread getting the value ${array[0]} from the buffer`);
+			};
+			worker.postMessage(buffer);
+		}
+	</script>
+</body>
+
+</html>

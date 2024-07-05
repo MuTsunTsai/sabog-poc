@@ -1,0 +1,11 @@
+{
+	"name": "sabog-poc",
+	"version": "1.0.0",
+	"description": "How to use SharedArrayBuffer on GitHub pages",
+	"scripts": {
+		"start": "pnpx serve -p 3808"
+	},
+	"keywords": [],
+	"author": "Mu-Tsun Tsai <don.m.t.tsai@gmail.com>",
+	"license": "MIT"
+}
